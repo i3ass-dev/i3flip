@@ -37,7 +37,7 @@ main(){
 
   if ((__acur[total]==1)); then
     ERX "only one window in container"
-  elif ((${__o[move]:-1}!=1)); then
+  elif ((${__o[move]:-0}==1)); then
     movetarget
   else
     i3-msg -q "[con_id=$__orgtrg]" focus, focus child
