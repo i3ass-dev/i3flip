@@ -3,8 +3,8 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-i3flip - version: 0.05
-updated: 2019-02-19 by budRich
+i3flip - version: 0.052
+updated: 2019-02-22 by budRich
 EOB
 }
 
@@ -26,7 +26,7 @@ i3flip --version|-v
 OPTIONS
 -------
 
---move|-m DIRECTION  
+--move|-m  
 Move the current tab instead of changing focus.
 
 --help|-h  
@@ -46,14 +46,14 @@ done
 
 declare -A __o
 eval set -- "$(getopt --name "i3flip" \
-  --options "m:hv" \
-  --longoptions "move:,help,version," \
+  --options "mhv" \
+  --longoptions "move,help,version," \
   -- "$@"
 )"
 
 while true; do
   case "$1" in
-    --move       | -m ) __o[move]="${2:-}" ; shift ;;
+    --move       | -m ) __o[move]=1 ;; 
     --help       | -h ) __o[help]=1 ;; 
     --version    | -v ) __o[version]=1 ;; 
     -- ) shift ; break ;;

@@ -20,11 +20,13 @@ movetarget(){
   curid="${__acur[focused]}"
 
   if [[ ${__acur[layout]:-} =~ splith|stacked ]]; then
-    case "$__dir" in
-      n) ldir=down ;;
-      p) ldir=up   ;;
-    esac
-    bdir=up
+    # case "$__dir" in
+    #   n) ldir=down ;;
+    #   p) ldir=up   ;;
+    # esac
+    # bdir=up
+    ERM "${__acur[layout]:-} moving with i3flip is currently only supported in tabbed or stacked containers"
+    return 1
   else
     case "$__dir" in
       n) ldir=right ;;
