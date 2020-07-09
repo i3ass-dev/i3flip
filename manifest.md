@@ -1,16 +1,15 @@
 ---
 description: >
   Tabswitching done right
-updated:       2019-02-22
-version:       0.052
+updated:       2020-06-01
+version:       0.056
 author:        budRich
 repo:          https://github.com/budlabs/i3ass
 created:       2018-01-03
 dependencies:  [i3, gawk]
 see-also:      [i3(1)]
 synopsis: |
-    DIRECTION
-    --move|-m **DIRECTION**
+    [--move|-m] **DIRECTION**
     --help|-h
     --version|-v
 ...

@@ -3,8 +3,7 @@
 ### usage
 
 ```text
-i3flip DIRECTION
-i3flip --move|-m **DIRECTION**
+i3flip [--move|-m] DIRECTION
 i3flip --help|-h
 i3flip --version|-v
 ```

@@ -3,8 +3,8 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-i3flip - version: 0.052
-updated: 2019-02-22 by budRich
+i3flip - version: 0.056
+updated: 2020-06-01 by budRich
 EOB
 }
 
@@ -62,8 +62,7 @@ i3flip - Tabswitching done right
 
 SYNOPSIS
 --------
-i3flip DIRECTION
-i3flip --move|-m DIRECTION
+i3flip [--move|-m] DIRECTION
 i3flip --help|-h
 i3flip --version|-v
 
