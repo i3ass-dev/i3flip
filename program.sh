@@ -3,7 +3,7 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-i3flip - version: 0.062
+i3flip - version: 0.093
 updated: 2020-07-30 by budRich
 EOB
 }
@@ -14,19 +14,23 @@ main(){
 
   declare -g _msgstring
 
-  _dir=${1,,}
+  _dir=$1
+  ((__o[verbose])) && ERM "target dir: $_dir"
+  _dir=${_dir,,}
 
-  # example output from viswiz:
-  # ... groupsize=4 grouppos=4 firstingroup=222 lastingroup=333
-  eval "$(i3viswiz -p | head -1)"
-  # unset unneeded varialbs from viswiz
-  unset trgcon trgx trgy wall trgpar sx sy sw sh
+  eval "$(i3viswiz -p ${__o[json]:+--json "${__o[json]}"} | head -1)"
+  # unset unneeded variabels from viswiz
+  unset trgcon trgx trgy wall trgpar sx sy sw sh groupid
 
-  : "${grouppos:=}"  "${lastingroup:=}"
-  : "${groupsize:=}" "${firstingroup:=}"
-  : "${groupid:=}"   "${grouplayout:=}"
+  # by creating the wiz string, shellcheck will
+  # not complain about un-assigned variables 
+  wiz+="layout:${grouplayout:=} last:${lastingroup:=} "
+  wiz+="first:${firstingroup:=} "
+  wiz+="pos:${grouppos:=} size:${groupsize:=0} "
 
-  ((groupsize == 1)) \
+  ((__o[verbose])) && ERM "w $wiz"
+
+  ((groupsize < 2)) \
     && ERX only container in group
 
   case "${_dir:0:1}" in
@@ -51,11 +55,10 @@ main(){
    || ( (grouppos == 1 && next)
    ||   (grouppos == groupsize && prev) ) )); then
    
-   ((__o[move]))                  \
-     && messy "move $ldir"         \
-     || messy "focus $ldir"
+   ((__o[move])) && cmd=move || cmd=focus
+   messy "$cmd  $ldir"
   
-  # focus/move after lastingroup
+  # warp focus/move to end of group
   elif ((grouppos == 1)); then
     if ((__o[move])); then
       messy "[con_id=$lastingroup] mark --add --toggle fliptmp"
@@ -65,7 +68,7 @@ main(){
       messy "[con_id=$lastingroup] focus"
     fi
 
-  # focus/move before firstingroup, (move+swap)
+  # warp focus/move to start of group, (move+swap)
   else
     if ((__o[move])); then
       messy "[con_id=$firstingroup] mark --add --toggle fliptmp"
@@ -88,21 +91,29 @@ i3flip - Tabswitching done right
 
 SYNOPSIS
 --------
-i3flip [--move|-m] DIRECTION [--json JSON] [--verbose] [--dryrun]
+i3flip [--move|-m] [--json JSON] [--verbose] [--dryrun] DIRECTION
 i3flip --help|-h
 i3flip --version|-v
 
 OPTIONS
 -------
 
---move|-m DIRECTION  
-Move the current tab instead of changing focus.
+--move|-m  
+Move the current container instead of changing
+focus.
+
 
 --json JSON  
+use JSON instead of output from  i3-msg -t
+get_tree
+
 
 --verbose  
+Print more information to stderr.
+
 
 --dryrun  
+Don't execute any i3 commands.
 
 --help|-h  
 Show help and exit.
@@ -140,8 +151,8 @@ messy() {
 declare -A __o
 options="$(
   getopt --name "[ERROR]:i3flip" \
-    --options "m:hv" \
-    --longoptions "move:,json:,verbose,dryrun,help,version," \
+    --options "mhv" \
+    --longoptions "move,json:,verbose,dryrun,help,version," \
     -- "$@" || exit 98
 )"
 
@@ -150,7 +161,7 @@ unset options
 
 while true; do
   case "$1" in
-    --move       | -m ) __o[move]="${2:-}" ; shift ;;
+    --move       | -m ) __o[move]=1 ;; 
     --json       ) __o[json]="${2:-}" ; shift ;;
     --verbose    ) __o[verbose]=1 ;; 
     --dryrun     ) __o[dryrun]=1 ;; 

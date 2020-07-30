@@ -4,19 +4,23 @@ main(){
 
   declare -g _msgstring
 
-  _dir=${1,,}
+  _dir=$1
+  ((__o[verbose])) && ERM "target dir: $_dir"
+  _dir=${_dir,,}
 
-  # example output from viswiz:
-  # ... groupsize=4 grouppos=4 firstingroup=222 lastingroup=333
-  eval "$(i3viswiz -p | head -1)"
-  # unset unneeded varialbs from viswiz
-  unset trgcon trgx trgy wall trgpar sx sy sw sh
+  eval "$(i3viswiz -p ${__o[json]:+--json "${__o[json]}"} | head -1)"
+  # unset unneeded variabels from viswiz
+  unset trgcon trgx trgy wall trgpar sx sy sw sh groupid
 
-  : "${grouppos:=}"  "${lastingroup:=}"
-  : "${groupsize:=}" "${firstingroup:=}"
-  : "${groupid:=}"   "${grouplayout:=}"
+  # by creating the wiz string, shellcheck will
+  # not complain about un-assigned variables 
+  wiz+="layout:${grouplayout:=} last:${lastingroup:=} "
+  wiz+="first:${firstingroup:=} "
+  wiz+="pos:${grouppos:=} size:${groupsize:=0} "
 
-  ((groupsize == 1)) \
+  ((__o[verbose])) && ERM "w $wiz"
+
+  ((groupsize < 2)) \
     && ERX only container in group
 
   case "${_dir:0:1}" in
@@ -41,11 +45,10 @@ main(){
    || ( (grouppos == 1 && next)
    ||   (grouppos == groupsize && prev) ) )); then
    
-   ((__o[move]))                  \
-     && messy "move $ldir"         \
-     || messy "focus $ldir"
+   ((__o[move])) && cmd=move || cmd=focus
+   messy "$cmd  $ldir"
   
-  # focus/move after lastingroup
+  # warp focus/move to end of group
   elif ((grouppos == 1)); then
     if ((__o[move])); then
       messy "[con_id=$lastingroup] mark --add --toggle fliptmp"
@@ -55,7 +58,7 @@ main(){
       messy "[con_id=$lastingroup] focus"
     fi
 
-  # focus/move before firstingroup, (move+swap)
+  # warp focus/move to start of group, (move+swap)
   else
     if ((__o[move])); then
       messy "[con_id=$firstingroup] mark --add --toggle fliptmp"

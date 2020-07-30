@@ -3,7 +3,7 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-i3flip - version: 0.062
+i3flip - version: 0.093
 updated: 2020-07-30 by budRich
 EOB
 }
@@ -19,21 +19,29 @@ i3flip - Tabswitching done right
 
 SYNOPSIS
 --------
-i3flip [--move|-m] DIRECTION [--json JSON] [--verbose] [--dryrun]
+i3flip [--move|-m] [--json JSON] [--verbose] [--dryrun] DIRECTION
 i3flip --help|-h
 i3flip --version|-v
 
 OPTIONS
 -------
 
---move|-m DIRECTION  
-Move the current tab instead of changing focus.
+--move|-m  
+Move the current container instead of changing
+focus.
+
 
 --json JSON  
+use JSON instead of output from  i3-msg -t
+get_tree
+
 
 --verbose  
+Print more information to stderr.
+
 
 --dryrun  
+Don't execute any i3 commands.
 
 --help|-h  
 Show help and exit.
@@ -53,8 +61,8 @@ done
 declare -A __o
 options="$(
   getopt --name "[ERROR]:i3flip" \
-    --options "m:hv" \
-    --longoptions "move:,json:,verbose,dryrun,help,version," \
+    --options "mhv" \
+    --longoptions "move,json:,verbose,dryrun,help,version," \
     -- "$@" || exit 98
 )"
 
@@ -63,7 +71,7 @@ unset options
 
 while true; do
   case "$1" in
-    --move       | -m ) __o[move]="${2:-}" ; shift ;;
+    --move       | -m ) __o[move]=1 ;; 
     --json       ) __o[json]="${2:-}" ; shift ;;
     --verbose    ) __o[verbose]=1 ;; 
     --dryrun     ) __o[dryrun]=1 ;; 
