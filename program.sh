@@ -3,7 +3,7 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-i3flip - version: 0.093
+i3flip - version: 0.094
 updated: 2020-07-30 by budRich
 EOB
 }
@@ -139,10 +139,7 @@ ERH(){
 }
 
 messy() {
-
   # arguments are valid i3-msg arguments
-  # separate resize commands and execute
-  # all commands at once in cleanup()
   (( __o[verbose] )) && ERM "m $*"
   (( __o[dryrun]  )) || _msgstring+="$*;"
 }
