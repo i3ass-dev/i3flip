@@ -2,46 +2,72 @@
 
 main(){
 
-  __dir="${1,,}"
-  __dir=${__dir:0:1}
+  declare -g _msgstring
 
-  # "$__dir not valid direction"
-  [[ ! $__dir =~ u|r|l|d|n|p ]] \
-    && ERX "$1 is not a valid direction"
+  _dir=${1,,}
 
-  case "$__dir" in
-    r|d ) __dir=n ;;
-    l|u ) __dir=p ;;
+  # example output from viswiz:
+  # ... groupsize=4 grouppos=4 firstingroup=222 lastingroup=333
+  eval "$(i3viswiz -p | head -1)"
+  # unset unneeded varialbs from viswiz
+  unset trgcon trgx trgy wall trgpar sx sy sw sh
+
+  : "${grouppos:=}"  "${lastingroup:=}"
+  : "${groupsize:=}" "${firstingroup:=}"
+  : "${groupid:=}"   "${grouplayout:=}"
+
+  ((groupsize == 1)) \
+    && ERX only container in group
+
+  case "${_dir:0:1}" in
+
+    r|d|n ) 
+      next=1 prev=0
+      [[ "$grouplayout" =~ tabbed|splith ]] \
+        && ldir=right || ldir=down
+    ;;
+
+    l|u|p )
+      prev=1 next=0
+      [[ "$grouplayout" =~ tabbed|splith ]] \
+        && ldir=left || ldir=up
+    ;;
+
+    *     ) ERX "$1 is not a valid direction" ;;
   esac
 
-  declare -A __acur
-
-  eval "$(getcurrent)"
+  # focus/move normally
+  if (( (grouppos  > 1 && grouppos < groupsize)       
+   || ( (grouppos == 1 && next)
+   ||   (grouppos == groupsize && prev) ) )); then
+   
+   ((__o[move]))                  \
+     && messy "move $ldir"         \
+     || messy "focus $ldir"
   
-  __orgtrg="$(gettarget)"
+  # focus/move after lastingroup
+  elif ((grouppos == 1)); then
+    if ((__o[move])); then
+      messy "[con_id=$lastingroup] mark --add --toggle fliptmp"
+      messy "move to mark fliptmp"
+      messy "[con_id=$lastingroup] mark --add --toggle fliptmp"
+    else
+      messy "[con_id=$lastingroup] focus"
+    fi
 
-  if ((${__o[move]:-0}!=1)); then
-    [[ ! ${__acur[layout]:-} =~ tabbed|stacked ]] && {
-
-      i3-msg -q focus parent
-      eval "$(getcurrent)"
-
-      [[ ! ${__acur[layout]:-} =~ tabbed|stacked ]] && {
-        i3-msg -q "[con_id=$__orgtrg]" focus
-        exit
-      }
-
-      __orgtrg="$(gettarget)"
-    }
-  fi
-
-  if ((__acur[total]==1)); then
-    ERX "only one window in container"
-  elif ((${__o[move]:-0}==1)); then
-    movetarget
+  # focus/move before firstingroup, (move+swap)
   else
-    i3-msg -q "[con_id=$__orgtrg]" focus, focus child
+    if ((__o[move])); then
+      messy "[con_id=$firstingroup] mark --add --toggle fliptmp"
+      messy "move to mark fliptmp, swap container with mark fliptmp"
+      messy "[con_id=$firstingroup] mark --add --toggle fliptmp"
+    else
+      messy "[con_id=$firstingroup] focus"
+    fi
   fi
+
+  ((__o[verbose])) || qflag='-q'
+  [[ -n $_msgstring ]] && i3-msg "${qflag:-}" "$_msgstring"
 }
 
 ___source="$(readlink -f "${BASH_SOURCE[0]}")"  #bashbud

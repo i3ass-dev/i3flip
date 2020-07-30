@@ -3,7 +3,7 @@
 ### usage
 
 ```text
-i3flip [--move|-m] DIRECTION
+i3flip [--move|-m] DIRECTION [--json JSON] [--verbose] [--dryrun]
 i3flip --help|-h
 i3flip --version|-v
 ```
@@ -23,8 +23,14 @@ defined with different words:
 OPTIONS
 -------
 
-`--move`|`-m`  
+`--move`|`-m` DIRECTION  
 Move the current tab instead of changing focus.
+
+`--json` JSON  
+
+`--verbose`  
+
+`--dryrun`  
 
 `--help`|`-h`  
 Show help and exit.
