@@ -11,7 +11,7 @@ i3flip --version|-v
 `i3flip` switch containers without leaving the parent.
 Perfect for tabbed or stacked layout, but works on all
 layouts. If direction is `next` and the active container is
-the last, the first container will be activated.  
+the last, the first container will get focused.  
 
 **DIRECTION** can be either *prev* or *next*, which can be
 defined with different words:  

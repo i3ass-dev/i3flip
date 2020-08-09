@@ -3,8 +3,8 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-i3flip - version: 0.094
-updated: 2020-07-30 by budRich
+i3flip - version: 0.097
+updated: 2020-08-09 by budRich
 EOB
 }
 
@@ -13,9 +13,10 @@ EOB
 main(){
 
   declare -g _msgstring
+  declare -i next prev
 
   _dir=$1
-  ((__o[verbose])) && ERM "target dir: $_dir"
+  ((__o[verbose])) && ERM "target direction: $_dir"
   _dir=${_dir,,}
 
   eval "$(i3viswiz -p ${__o[json]:+--json "${__o[json]}"} | head -1)"
@@ -30,8 +31,7 @@ main(){
 
   ((__o[verbose])) && ERM "w $wiz"
 
-  ((groupsize < 2)) \
-    && ERX only container in group
+  ((groupsize < 2)) && ERX only container in group
 
   case "${_dir:0:1}" in
 

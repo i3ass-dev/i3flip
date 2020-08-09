@@ -1,5 +1,5 @@
 .nh
-.TH I3FLIP 1 2020\-07\-30 Linux "User Manuals"
+.TH I3FLIP 1 2020\-08\-09 Linux "User Manuals"
 .SH NAME
 .PP
 \fB\fCi3flip\fR \- Tabswitching done right
@@ -22,7 +22,7 @@ i3flip \-\-version|\-v
 parent. Perfect for tabbed or stacked layout, but
 works on all layouts. If direction is \fB\fCnext\fR and
 the active container is the last, the first
-container will be activated.
+container will get focused.
 
 .PP
 \fBDIRECTION\fP can be either \fIprev\fP or \fInext\fP,
@@ -83,7 +83,7 @@ bindsym Mod4+Shift+Tab   exec \-\&\-\&no\-\&startup\-\&id i3flip prev
 
 .SH DEPENDENCIES
 .PP
-\fB\fCi3\fR \fB\fCgawk\fR
+\fB\fCi3\fR \fB\fCi3viswiz\fR
 
 .PP
 budRich https://github.com/budlabs/i3ass

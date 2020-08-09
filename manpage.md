@@ -14,7 +14,7 @@ DESCRIPTION
 parent. Perfect for tabbed or stacked layout, but
 works on all layouts. If direction is `next` and
 the active container is the last, the first
-container will be activated.  
+container will get focused.  
 
 **DIRECTION** can be either *prev* or *next*,
 which can be defined with different words:  
@@ -60,7 +60,7 @@ bindsym Mod4+Shift+Tab   exec --no-startup-id i3flip prev
 DEPENDENCIES
 ------------
 `i3`
-`gawk`
+`i3viswiz`
 
 
 
