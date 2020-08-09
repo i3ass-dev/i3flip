@@ -3,10 +3,11 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-i3flip - version: 0.052
-updated: 2019-02-22 by budRich
+i3flip - version: 0.099
+updated: 2020-08-09 by budRich
 EOB
 }
+
 
 
 
@@ -18,8 +19,7 @@ i3flip - Tabswitching done right
 
 SYNOPSIS
 --------
-i3flip DIRECTION
-i3flip --move|-m DIRECTION
+i3flip [--move|-m] [--json JSON] [--verbose] [--dryrun] DIRECTION
 i3flip --help|-h
 i3flip --version|-v
 
@@ -27,7 +27,21 @@ OPTIONS
 -------
 
 --move|-m  
-Move the current tab instead of changing focus.
+Move the current container instead of changing
+focus.
+
+
+--json JSON  
+use JSON instead of output from  i3-msg -t
+get_tree
+
+
+--verbose  
+Print more information to stderr.
+
+
+--dryrun  
+Don't execute any i3 commands.
 
 --help|-h  
 Show help and exit.
@@ -45,35 +59,32 @@ for ___f in "${___dir}/lib"/*; do
 done
 
 declare -A __o
-eval set -- "$(getopt --name "i3flip" \
-  --options "mhv" \
-  --longoptions "move,help,version," \
-  -- "$@"
+options="$(
+  getopt --name "[ERROR]:i3flip" \
+    --options "mhv" \
+    --longoptions "move,json:,verbose,dryrun,help,version," \
+    -- "$@" || exit 98
 )"
+
+eval set -- "$options"
+unset options
 
 while true; do
   case "$1" in
     --move       | -m ) __o[move]=1 ;; 
-    --help       | -h ) __o[help]=1 ;; 
-    --version    | -v ) __o[version]=1 ;; 
+    --json       ) __o[json]="${2:-}" ; shift ;;
+    --verbose    ) __o[verbose]=1 ;; 
+    --dryrun     ) __o[dryrun]=1 ;; 
+    --help       | -h ) ___printhelp && exit ;;
+    --version    | -v ) ___printversion && exit ;;
     -- ) shift ; break ;;
     *  ) break ;;
   esac
   shift
 done
 
-if [[ ${__o[help]:-} = 1 ]]; then
-  ___printhelp
-  exit
-elif [[ ${__o[version]:-} = 1 ]]; then
-  ___printversion
-  exit
-fi
-
 [[ ${__lastarg:="${!#:-}"} =~ ^--$|${0}$ ]] \
-  && __lastarg="" \
-  || true
-
+  && __lastarg="" 
 
 
 

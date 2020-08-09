@@ -3,8 +3,7 @@
 SYNOPSIS
 --------
 ```text
-i3flip DIRECTION
-i3flip --move|-m **DIRECTION**
+i3flip [--move|-m] [--json JSON] [--verbose] [--dryrun] DIRECTION
 i3flip --help|-h
 i3flip --version|-v
 ```
@@ -15,7 +14,7 @@ DESCRIPTION
 parent. Perfect for tabbed or stacked layout, but
 works on all layouts. If direction is `next` and
 the active container is the last, the first
-container will be activated.  
+container will get focused.  
 
 **DIRECTION** can be either *prev* or *next*,
 which can be defined with different words:  
@@ -28,7 +27,18 @@ OPTIONS
 -------
 
 `--move`|`-m`  
-Move the current tab instead of changing focus.
+Move the current container instead of changing
+focus.
+
+`--json` JSON  
+use JSON instead of output from  `i3-msg -t
+get_tree`
+
+`--verbose`  
+Print more information to **stderr**.
+
+`--dryrun`  
+Don't execute any *i3 commands*.
 
 `--help`|`-h`  
 Show help and exit.
@@ -50,7 +60,7 @@ bindsym Mod4+Shift+Tab   exec --no-startup-id i3flip prev
 DEPENDENCIES
 ------------
 `i3`
-`gawk`
+`i3viswiz`
 
 
 
