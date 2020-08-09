@@ -50,6 +50,16 @@ bindsym Mod4+Tab         exec --no-startup-id i3flip next
 bindsym Mod4+Shift+Tab   exec --no-startup-id i3flip prev
 ```
 
+## updates
+
+### 2020.08.09
+
+We now use the output of **i3viswiz** instead of a custom
+AWK script. This made everything more reliable and `--move`
+function now works as expected in all types of layouts,
+(*not just tabbed and stacked as before*). Also added
+`--json`, `--verbose` and `--dryrun` options.
+
 
 
 
