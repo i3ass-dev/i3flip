@@ -4,5 +4,4 @@ lib/createconf.sh
 program.sh
 init.sh
 manpage.md
-README.md
 i3flip.1
