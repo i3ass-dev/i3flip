@@ -10,6 +10,8 @@ main(){
   declare -i next prev
 
   _dir=$1
+
+  __o[verbose]=1
   ((__o[verbose])) && ERM $'\n'"target direction: $_dir"
   _dir=${_dir,,}
 
