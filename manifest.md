@@ -1,7 +1,7 @@
 ---
 description: >
   Tabswitching done right
-updated:       2020-08-12
+updated:       2021-05-28
 version:       0.101
 author:        budRich
 repo:          https://github.com/budlabs/i3ass
